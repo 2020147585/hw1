@@ -2,31 +2,31 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-df_welfare = pd.read_csv("welfare.csv")
-df_population = pd.read_csv("population_summary.csv")
+welfare = pd.read_csv("welfare.csv")
+population = pd.read_csv("population_summary.csv")
 
-df_welfare.rename(columns={'welfare of gdp': 'welfare_gdp_percentage'}, inplace=True)
-df_population.rename(columns={'60+': 'above_60_population', '<60': 'under_60_population'}, inplace=True)
+welfare.rename(columns={'welfare of gdp': 'welfare_gdp_percentage'}, inplace=True)
+population.rename(columns={'60+': 'above_60_population', '<60': 'under_60_population'}, inplace=True)
 
-df_merged = df_welfare[['year', 'welfare_gdp_percentage']].merge(df_population, on="year")
+merged = welfare[['year', 'welfare_gdp_percentage']].merge(population, on="year")
 
-df_merged['welfare_gdp_percentage'] = pd.to_numeric(df_merged['welfare_gdp_percentage'], errors='coerce').fillna(0)
-df_merged['under_60_population'] = pd.to_numeric(df_merged['under_60_population'], errors='coerce').fillna(0)
-df_merged['above_60_population'] = pd.to_numeric(df_merged['above_60_population'], errors='coerce').fillna(0)
+merged['welfare_gdp_percentage'] = pd.to_numeric(merged['welfare_gdp_percentage'], errors='coerce').fillna(0)
+merged['under_60_population'] = pd.to_numeric(merged['under_60_population'], errors='coerce').fillna(0)
+merged['above_60_population'] = pd.to_numeric(merged['above_60_population'], errors='coerce').fillna(0)
 
 sns.set_style("whitegrid")
 
 fig, ax1 = plt.subplots(figsize=(12, 7))
 
-bar1 = ax1.bar(df_merged['year'], df_merged['under_60_population'], color='blue', alpha=0.5, label="under 60")
-bar2 = ax1.bar(df_merged['year'], df_merged['above_60_population'], color='red', alpha=0.5, bottom=df_merged['under_60_population'], label="above 60")
+bar1 = ax1.bar(merged['year'], merged['under_60_population'], color='blue', alpha=0.5, label="under 60")
+bar2 = ax1.bar(merged['year'], merged['above_60_population'], color='red', alpha=0.5, bottom=merged['under_60_population'], label="above 60")
 ax1.set_ylabel("Population", fontsize=14)
 ax1.set_xlabel("Year", fontsize=14)
 
 ax2 = ax1.twinx()
-line, = ax2.plot(df_merged['year'], df_merged['welfare_gdp_percentage'], color='green', marker='o', linestyle='-', linewidth=2, label="Social welfare in GDP (%)")
+line, = ax2.plot(merged['year'], merged['welfare_gdp_percentage'], color='green', marker='o', linestyle='-', linewidth=2, label="Social welfare in GDP (%)")
 
-ax2.set_yticks(df_merged['welfare_gdp_percentage'])
+ax2.set_yticks(merged['welfare_gdp_percentage'])
 ax2.yaxis.grid(False)
 ax2.set_ylabel("Social welfare in GDP (%)", fontsize=14)
 
